@@ -1,0 +1,366 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tournoi {{ nomTournois }}</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f0f0f0;
+            margin: 0;
+            padding: 0;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        h1, h2, h3 {
+            color: #333;
+        }
+
+        h1 {
+            font-size: 24px;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        h2 {
+            font-size: 20px;
+            margin-bottom: 15px;
+        }
+
+        h3 {
+            font-size: 18px;
+            margin-bottom: 10px;
+        }
+
+        .form-container {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            max-width: 400px;
+            margin: 0 auto;
+        }
+
+        label {
+            display: block;
+            font-size: 14px;
+            color: #333;
+            margin-bottom: 5px;
+        }
+
+        input[type="text"],
+        input[type="password"],
+        input[type="number"] {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            box-sizing: border-box;
+            margin-bottom: 10px;
+        }
+
+        button {
+            padding: 10px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+            width: 100%;
+        }
+
+        button.blue {
+            background-color: #007bff;
+            color: #fff;
+        }
+
+        button.blue:hover {
+            background-color: #0056b3;
+        }
+
+        button.purple {
+            background-color: #6f42c1;
+            color: #fff;
+        }
+
+        button.purple:hover {
+            background-color: #5a32a3;
+        }
+
+        button.green {
+            background-color: #28a745;
+            color: #fff;
+        }
+
+        button.green:hover {
+            background-color: #218838;
+        }
+
+        button.red {
+            background-color: #dc3545;
+            color: #fff;
+        }
+
+        button.red:hover {
+            background-color: #c82333;
+        }
+
+        .notification {
+            padding: 10px;
+            margin-bottom: 15px;
+            border-radius: 4px;
+        }
+
+        .notification.error {
+            background-color: #f8d7da;
+            color: #721c24;
+        }
+
+        .notification.success {
+            background-color: #d4edda;
+            color: #155724;
+        }
+
+        .notification.winner {
+            background-color: #ffd700;
+            color: #333;
+            font-weight: bold;
+            border: 1px solid #d4af37;
+        }
+
+        ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        li {
+            padding: 10px;
+            border-bottom: 1px solid #ddd;
+        }
+
+        li:last-child {
+            border-bottom: none;
+        }
+
+        .tab-nav {
+            display: flex;
+            border-bottom: 1px solid #ddd;
+            margin-bottom: 20px;
+        }
+
+        .tab-nav li {
+            margin-right: 5px;
+        }
+
+        .tab-link {
+            display: inline-block;
+            padding: 10px 15px;
+            background-color: #fff;
+            color: #007bff;
+            font-weight: bold;
+            border: 1px solid #ddd;
+            border-bottom: none;
+            border-radius: 4px 4px 0 0;
+            text-decoration: none;
+        }
+
+        .tab-link.active {
+            background-color: #f0f0f0;
+            color: #0056b3;
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        a {
+            color: #007bff;
+            text-decoration: none;
+        }
+
+        a:hover {
+            text-decoration: underline;
+        }
+
+        .flex {
+            display: flex;
+            gap: 10px;
+        }
+
+        .text-center {
+            text-align: center;
+        }
+
+        .match-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 10px;
+            border-bottom: 1px solid #ddd;
+        }
+
+        .match-teams {
+            font-weight: bold;
+            color: #333;
+            flex-grow: 1;
+        }
+
+        .match-status {
+            font-weight: bold;
+            color: #555;
+            padding: 6px 12px;
+            border-radius: 4px;
+            font-size: 12px;
+        }
+
+        .match-status.non-commence {
+            background-color: #dc3545;
+            color: #fff;
+        }
+
+        .match-status.en-cours {
+            background-color: #007bff;
+            color: #fff;
+        }
+
+        .match-status.termine {
+            background-color: #28a745;
+            color: #fff;
+        }
+
+        .match-winner {
+            font-style: italic;
+            color: #555;
+        }
+    </style>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const tabs = document.querySelectorAll('.tab-link');
+            const contents = document.querySelectorAll('.tab-content');
+
+            // Afficher le premier onglet par défaut
+            if (tabs.length > 0 && contents.length > 0) {
+                tabs[0].classList.add('active');
+                contents[0].classList.add('active');
+            }
+
+            tabs.forEach(tab => {
+                tab.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    const tabId = tab.getAttribute('data-tab');
+
+                    // Supprimer la classe active de tous les onglets et contenus
+                    tabs.forEach(t => t.classList.remove('active'));
+                    contents.forEach(c => c.classList.remove('active'));
+
+                    // Ajouter la classe active à l'onglet cliqué et au contenu correspondant
+                    tab.classList.add('active');
+                    document.getElementById(tabId).classList.add('active');
+                });
+            });
+        });
+    </script>
+</head>
+<body>
+    <div class="container">
+        <h1>Tournoi {{ nomTournois }}</h1>
+        
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% set all_matches_terminated = true %}
+            {% if matches_by_tour and matches_by_tour is mapping %}
+                {% for tour, matches in matches_by_tour.items() %}
+                    {% for match in matches %}
+                        {% if match[3] != 'terminé' %}
+                            {% set all_matches_terminated = false %}
+                        {% endif %}
+                    {% endfor %}
+                {% endfor %}
+            {% endif %}
+            
+            {% if messages %}
+                {% for category, message in messages %}
+                    <div class="notification {{ category }}">{{ message }}</div>
+                {% endfor %}
+            {% endif %}
+            
+            {% if all_matches_terminated and matches_by_tour and matches_by_tour is mapping %}
+                {% for category, message in messages %}
+                    {% if message.startswith("L'équipe") and message.endswith("a gagné le tournoi !") %}
+                        <div class="notification winner">
+                            Tournoi Terminé ! L'équipe gagnante est : {{ message.split('L\'équipe ')[1].split(' a gagné')[0] }}
+                        </div>
+                    {% endif %}
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+        
+        <!-- Onglets -->
+        <div>
+            <ul class="tab-nav">
+                <li><a class="tab-link" href="#matches" data-tab="matches">Matchs</a></li>
+                <li><a class="tab-link" href="#teams" data-tab="teams">Équipes</a></li>
+                <li><a class="tab-link" href="#players" data-tab="players">Joueurs</a></li>
+            </ul>
+        </div>
+        
+        <!-- Contenu des onglets -->
+        <div id="matches" class="tab-content">
+            <h2>Matchs</h2>
+            {% if matches_by_tour and matches_by_tour is mapping %}
+                {% for tour, matches in matches_by_tour.items() %}
+                    <h3>{{ tour }}</h3>
+                    <ul>
+                        {% for match in matches %}
+                            <li class="match-item">
+                                <span class="match-teams">{{ match[6]|default('Équipe inconnue') }} VS {{ match[7]|default('Équipe inconnue') }}</span>
+                                <span class="match-status {% if match[3] == 'non commencé' %}non-commence{% elif match[3] == 'en cours' %}en-cours{% else %}termine{% endif %}">
+                                    {% if match[3] == 'non commencé' %}Non débuté{% elif match[3] == 'en cours' %}En cours{% else %}Terminé{% endif %}
+                                </span>
+                                {% if match[3] == 'terminé' %}
+                                    <span class="match-winner">(Gagnant: {{ match[6] if match[4] == match[1] else match[7] }})</span>
+                                {% endif %}
+                            </li>
+                        {% endfor %}
+                    </ul>
+                {% endfor %}
+            {% else %}
+                <p>Aucun match de lancé et prévu pour le moment.</p>
+            {% endif %}
+        </div>
+        
+        <div id="teams" class="tab-content">
+            <h2>Équipes</h2>
+            <ul>
+                {% for team in teams %}
+                    <li>{{ team[0] }}. {{ team[1] }}</li>
+                {% else %}
+                    <li>Aucune équipe enregistrée.</li>
+                {% endfor %}
+            </ul>
+        </div>
+        
+        <div id="players" class="tab-content">
+            <h2>Joueurs</h2>
+            <ul>
+                {% for player in players %}
+                    <li>{{ player[0] }}. {{ player[1] }} (Équipe {{ player[2] or '-' }} - {{ player[3] or 'Sans équipe' }})</li>
+                {% else %}
+                    <li>Aucun joueur enregistré.</li>
+                {% endfor %}
+            </ul>
+        </div>
+        
+        <a href="{{ url_for('index') }}">Retour à l'accueil</a>
+    </div>
+<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'93c3427c2c1f4538',t:'MTc0NjY0NzU2Ni4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script>
+</body>
+</html>

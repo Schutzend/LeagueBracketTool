@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LeagueBracketTool</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f0f0f0;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        h1, h2, h3 {
+            color: #333;
+        }
+
+        h1 {
+            font-size: 24px;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        h2 {
+            font-size: 20px;
+            margin-bottom: 15px;
+        }
+
+        h3 {
+            font-size: 18px;
+            margin-bottom: 10px;
+        }
+
+        .form-container {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            max-width: 400px;
+            width: 100%;
+            box-sizing: border-box;
+        }
+
+        label {
+            display: block;
+            font-size: 14px;
+            color: #333;
+            margin-bottom: 5px;
+        }
+
+        input[type="text"],
+        input[type="password"],
+        input[type="number"] {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            box-sizing: border-box;
+            margin-bottom: 10px;
+        }
+
+        button {
+            padding: 10px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+            width: 100%;
+        }
+
+        button.blue {
+            background-color: #007bff;
+            color: #fff;
+        }
+
+        button.blue:hover {
+            background-color: #0056b3;
+        }
+
+        button.purple {
+            background-color: #6f42c1;
+            color: #fff;
+        }
+
+        button.purple:hover {
+            background-color: #5a32a3;
+        }
+
+        button.green {
+            background-color: #28a745;
+            color: #fff;
+        }
+
+        button.green:hover {
+            background-color: #218838;
+        }
+
+        button.red {
+            background-color: #dc3545;
+            color: #fff;
+        }
+
+        button.red:hover {
+            background-color: #c82333;
+        }
+
+        .notification {
+            padding: 10px;
+            margin-bottom: 15px;
+            border-radius: 4px;
+        }
+
+        .notification.error {
+            background-color: #f8d7da;
+            color: #721c24;
+        }
+
+        .notification.success {
+            background-color: #d4edda;
+            color: #155724;
+        }
+
+        ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        li {
+            padding: 10px;
+            border-bottom: 1px solid #ddd;
+        }
+
+        li:last-child {
+            border-bottom: none;
+        }
+
+        .tab-nav {
+            display: flex;
+            border-bottom: 1px solid #ddd;
+            margin-bottom: 20px;
+        }
+
+        .tab-nav li {
+            margin-right: 5px;
+        }
+
+        .tab-link {
+            display: inline-block;
+            padding: 10px 15px;
+            background-color: #fff;
+            color: #007bff;
+            font-weight: bold;
+            border: 1px solid #ddd;
+            border-bottom: none;
+            border-radius: 4px 4px 0 0;
+            text-decoration: none;
+        }
+
+        .tab-link.active {
+            background-color: #f0f0f0;
+            color: #0056b3;
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        a {
+            color: #007bff;
+            text-decoration: none;
+        }
+
+        a:hover {
+            text-decoration: underline;
+        }
+
+        .flex {
+            display: flex;
+            gap: 10px;
+        }
+
+        .text-center {
+            display: block;
+            text-align: center;
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="form-container">
+        <h1>LeagueBracketTool</h1>
+        
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    <div class="notification {{ category }}">{{ message }}</div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+        
+        <form method="POST" action="{{ url_for('index') }}">
+            <div>
+                <label for="idTournois">Nom du Tournoi</label>
+            <input type="text" name="idTournois" id="idTournois" placeholder="Ex: LOL123" required>
+            </div>
+            <div class="flex">
+                <button type="submit" name="view_tournament" class="blue">Accéder au Tournoi</button>
+                <button type="submit" name="admin_login" class="purple">Connexion Admin</button>
+            </div>
+        </form>
+        
+        <a href="{{ url_for('create_tournament') }}" class="green text-center">Créer un Nouveau Tournoi</a>
+    </div>
+</body>
+</html>
